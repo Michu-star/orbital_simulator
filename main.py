@@ -55,6 +55,14 @@ def main():
                                    [0, 0, 0]]))
 
 
+    mercury = Body(0.055, np.array([[0.387, 0, 0],
+                                          [0, 10.1, 0]]))
+
+
+    venus = Body(0.815, np.array([[0.724, 0, 0],
+                                        [0, 7.38, 0]]))
+
+
     earth = Body(1, np.array([[1, 0, 0],
                                 [0, 2*np.pi, 0]]))
 
@@ -66,7 +74,8 @@ def main():
     mars = Body(0.107, np.array([[1.524, 0, 0],
                                        [0, 5.09, 0]]))
 
-    bodies_list = [sun, earth, moon, mars]
+
+    bodies_list = [sun, mercury, venus, earth, moon, mars]
 
     G = 6.674 * 10 ** -11 * 5.97e24 * 1.496e11**-3 * (3600*24*365.25)**2
     print(G)
