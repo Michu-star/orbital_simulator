@@ -52,35 +52,41 @@ class Simulation:
 
 def main():
     sun = Body(332950, np.array([[0, 0, 0],
-                                   [0, 0, 0]]))
-
+                                   [0, -0.003369, 0]]))
 
     mercury = Body(0.055, np.array([[0.387, 0, 0],
                                           [0, 10.1, 0]]))
 
-
     venus = Body(0.815, np.array([[0.724, 0, 0],
                                         [0, 7.38, 0]]))
-
 
     earth = Body(1, np.array([[1, 0, 0],
                                 [0, 2*np.pi, 0]]))
 
-
     moon = Body(0.012, np.array([[1 + 2.57e-3, 0, 0],
                                        [0, 2*np.pi + 0.216, 0]]))
-
 
     mars = Body(0.107, np.array([[1.524, 0, 0],
                                        [0, 5.09, 0]]))
 
+    jupiter = Body(317.8, np.array([[5.204, 0, 0],
+                                    [0, 2.754, 0]]))
 
-    bodies_list = [sun, mercury, venus, earth, moon, mars]
+    saturn = Body(95.16, np.array([[9.583, 0, 0],
+                                   [0, 2.030, 0]]))
+
+    uranus = Body(14.54, np.array([[19.218, 0, 0],
+                                   [0, 1.433, 0]]))
+
+    neptune = Body(17.15, np.array([[30.11, 0, 0],
+                                    [0, 1.145, 0]]))
+
+    bodies_list = [sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune]
 
     G = 6.674 * 10 ** -11 * 5.97e24 * 1.496e11**-3 * (3600*24*365.25)**2
     print(G)
 
-    t = np.linspace(0, 3, 10000)
+    t = np.linspace(0, 10, 10000)
 
     simulation = Simulation(bodies_list)
 
