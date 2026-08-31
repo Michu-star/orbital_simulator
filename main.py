@@ -89,8 +89,8 @@ class Simulation:
         m_total = sum(body.mass for body in self.bodies)
 
         for i, body in enumerate(self.bodies):
-            r_cm = body.mass * r[:, i]
-            v_cm = body.mass * v[:, i]
+            r_cm += body.mass * r[:, i]
+            v_cm += body.mass * v[:, i]
 
         r_cm = r_cm / m_total
         v_cm = v_cm / m_total
