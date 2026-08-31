@@ -7,17 +7,23 @@ from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import NavigationToolbar2QT
 
-from plotting import draw_scene
+from plotting import *
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, simulation, solution):
+    def __init__(self, simulation, solution, t, rel_energy_err, momentum, x):
         super().__init__()
         self.setWindowTitle("Orbital Simulator")
         self.setGeometry(0, 0, 800, 600)
 
         self.sim = simulation
         self.sol = solution
+
+        self.t = t
+        self.rel_energy_err = rel_energy_err
+        self.momentum = momentum
+        self.x = x
+
         self.frame = 0
         self.first_draw = True
 
@@ -31,9 +37,17 @@ class MainWindow(QMainWindow):
 
     def create_plot(self):
         self.figure = Figure()
-        self.canvas = FigureCanvasQTAgg(self.figure)
-        self.ax = self.figure.subplots()
 
+        gs = self.figure.add_gridspec(
+            2, 2,
+            width_ratios=[2, 1]
+        )
+
+        self.ax_orbit = self.figure.add_subplot(gs[:, 0])
+        self.ax_energy = self.figure.add_subplot(gs[0, 1])
+        self.ax_momentum = self.figure.add_subplot(gs[1, 1])
+
+        self.canvas = FigureCanvasQTAgg(self.figure)
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
 
     def create_controls(self):
@@ -70,18 +84,17 @@ class MainWindow(QMainWindow):
 
     def update_plot(self, keep_zoom=True):
         if keep_zoom and not self.first_draw and self.view_mode == "solar_system":
-            xlim = self.ax.get_xlim()
-            ylim = self.ax.get_ylim()
+            xlim = self.ax_orbit.get_xlim()
+            ylim = self.ax_orbit.get_ylim()
 
-        self.ax.clear()
-
-        draw_scene(self.ax, self.sol, self.frame, self.view_mode)
+        draw_scene(self.ax_orbit, self.sol, self.frame, self.view_mode)
+        draw_energy_plot(self.ax_energy, self.t, self.rel_energy_err, self.frame)
+        draw_momentum_plot(self.ax_momentum, self.t, self.momentum, self.x, self.frame)
 
         if keep_zoom and not self.first_draw and self.view_mode == "solar_system":
-            self.ax.set_xlim(xlim)
-            self.ax.set_ylim(ylim)
+            self.ax_orbit.set_xlim(xlim)
+            self.ax_orbit.set_ylim(ylim)
 
-        self.ax.set_aspect('equal')
         self.canvas.draw()
         self.first_draw = False
 
@@ -99,8 +112,8 @@ class MainWindow(QMainWindow):
 
         self.update_plot(keep_zoom=False)
 
-def draw_window(simulation, solution):
+def draw_window(simulation, solution, t, energy, momentum, x):
     app = QApplication(sys.argv)
-    window = MainWindow(simulation, solution)
+    window = MainWindow(simulation, solution, t, energy, momentum, x)
     window.show()
     sys.exit(app.exec())

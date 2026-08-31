@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def draw_scene(ax, solution, frame, view_mode):
+    ax.clear()
+
     for i in range(solution.shape[1]):
         # Plot the trajectory
         ax.plot(solution[:frame + 1, i, 0], solution[:frame + 1, i, 1])
@@ -21,31 +23,38 @@ def draw_scene(ax, solution, frame, view_mode):
         ax.set_xlim(earth_x - dist, earth_x + dist)
         ax.set_ylim(earth_y - dist, earth_y + dist)
 
-    '''
-    if view_mode == "solar_system":
-        for i in range(solution.shape[1]):
-            # Plot the trajectory
-            ax.plot(solution[:frame + 1, i, 0], solution[:frame + 1, i, 1])
+    ax.set_aspect('equal')
+    ax.set_xlabel("x / a.u.")
+    ax.set_ylabel("y / a.u.")
 
-            # Plot the position at a particular frame
-            ax.plot(solution[frame, i, 0], solution[frame, i, 1], marker='o')
 
-    elif view_mode == "earth_moon":
-        earth_position = solution[:, 3, :2]
-        moon_position = solution[:, 4, :2]
+def draw_energy_plot(ax, t, relative_energy_error, frame):
+    ax.clear()
 
-        moon_relative = moon_position - earth_position
+    ax.plot(t, relative_energy_error)
+    ax.axvline(t[frame], linestyle='dashed',
+              label=f'{relative_energy_error[frame]}')
 
-        ax.plot(
-            moon_relative[:frame + 1, 0],
-            moon_relative[:frame + 1, 1]
-        )
+    ax.set_title("Rel. energy error vs time")
+    ax.set_ylabel("error")
+    ax.legend()
 
-        ax.plot(
-            moon_relative[frame, 0],
-            moon_relative[frame, 1],
-            marker='o'
-        )
 
-        ax.plot(0, 0, marker='o')
-    '''
+
+def draw_momentum_plot(ax, t, momentum, x, frame):
+    ax.clear()
+
+    ax.plot(t, momentum[:, x])
+    ax.axvline(t[frame], linestyle='dashed', label=f'{momentum[frame, x]}')
+
+    if x == 0:
+        x = 'x'
+    elif x == 1:
+        x = 'y'
+    else:
+        x = 'z'
+
+    ax.set_title(f'{x} momentum vs time')
+    ax.set_xlabel("t / years")
+    ax.set_ylabel("momentum / m_e * a.u./year")
+    ax.legend()
