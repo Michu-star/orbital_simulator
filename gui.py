@@ -11,7 +11,7 @@ from plotting import *
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, simulation, solution, t, rel_energy_err, momentum, x, angular_momentum):
+    def __init__(self, simulation, solution, t, rel_energy_err, momentum, x, rel_angular_momentum_err):
         super().__init__()
         self.setWindowTitle("Orbital Simulator")
         self.setGeometry(0, 0, 800, 600)
@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
         self.rel_energy_err = rel_energy_err
         self.momentum = momentum
         self.x = x
-        self.ang_momentum = angular_momentum
+        self.rel_ang_momentum_err = rel_angular_momentum_err
 
         self.frame = 0
         self.first_draw = True
@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         draw_scene(self.ax_orbit, self.sol, self.frame, self.view_mode)
         draw_energy_plot(self.ax_energy, self.t, self.rel_energy_err, self.frame)
         draw_momentum_plot(self.ax_momentum, self.t, self.momentum, self.x, self.frame)
-        draw_ang_momentum_plot(self.ax_ang_momentum, self.t, self.ang_momentum, self.frame)
+        draw_ang_momentum_plot(self.ax_ang_momentum, self.t, self.rel_ang_momentum_err, self.frame)
 
         if keep_zoom and not self.first_draw and self.view_mode == "solar_system":
             self.ax_orbit.set_xlim(xlim)

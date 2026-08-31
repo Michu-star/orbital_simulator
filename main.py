@@ -178,7 +178,7 @@ def main():
     momentum = simulation.get_momentum(solution)
 
     angular_momentum = simulation.get_angular_momentum(solution)
-    relative_ang_momentum_err = (angular_momentum - angular_momentum[0, 2]) / angular_momentum[0, 2]
+    relative_ang_momentum_err = (angular_momentum[:, 2] - angular_momentum[0, 2]) / angular_momentum[0, 2]
 
 
     draw_window(simulation, solution, t, relative_energy_error, momentum, 0, relative_ang_momentum_err)
