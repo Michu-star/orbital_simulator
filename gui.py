@@ -11,7 +11,7 @@ from plotting import *
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, simulation, solution, t, rel_energy_err, momentum, x):
+    def __init__(self, simulation, solution, t, rel_energy_err, momentum, x, angular_momentum):
         super().__init__()
         self.setWindowTitle("Orbital Simulator")
         self.setGeometry(0, 0, 800, 600)
@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         self.rel_energy_err = rel_energy_err
         self.momentum = momentum
         self.x = x
+        self.ang_momentum = angular_momentum
 
         self.frame = 0
         self.first_draw = True
@@ -39,13 +40,14 @@ class MainWindow(QMainWindow):
         self.figure = Figure()
 
         gs = self.figure.add_gridspec(
-            2, 2,
+            3, 2,
             width_ratios=[2, 1]
         )
 
         self.ax_orbit = self.figure.add_subplot(gs[:, 0])
         self.ax_energy = self.figure.add_subplot(gs[0, 1])
         self.ax_momentum = self.figure.add_subplot(gs[1, 1])
+        self.ax_ang_momentum = self.figure.add_subplot(gs[2, 1])
 
         self.canvas = FigureCanvasQTAgg(self.figure)
         self.toolbar = NavigationToolbar2QT(self.canvas, self)
@@ -90,6 +92,7 @@ class MainWindow(QMainWindow):
         draw_scene(self.ax_orbit, self.sol, self.frame, self.view_mode)
         draw_energy_plot(self.ax_energy, self.t, self.rel_energy_err, self.frame)
         draw_momentum_plot(self.ax_momentum, self.t, self.momentum, self.x, self.frame)
+        draw_ang_momentum_plot(self.ax_ang_momentum, self.t, self.ang_momentum, self.frame)
 
         if keep_zoom and not self.first_draw and self.view_mode == "solar_system":
             self.ax_orbit.set_xlim(xlim)
@@ -112,8 +115,8 @@ class MainWindow(QMainWindow):
 
         self.update_plot(keep_zoom=False)
 
-def draw_window(simulation, solution, t, energy, momentum, x):
+def draw_window(simulation, solution, t, energy, momentum, x, angular_momentum):
     app = QApplication(sys.argv)
-    window = MainWindow(simulation, solution, t, energy, momentum, x)
+    window = MainWindow(simulation, solution, t, energy, momentum, x, angular_momentum)
     window.show()
     sys.exit(app.exec())

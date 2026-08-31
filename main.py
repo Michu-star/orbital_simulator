@@ -79,6 +79,32 @@ class Simulation:
 
         return result
 
+    def get_angular_momentum(self, solution):
+        r = solution[:, :, :3]
+        v = solution[:, :, 3:]
+
+        r_cm = np.zeros((len(solution), 3))
+        v_cm = np.zeros((len(solution), 3))
+
+        m_total = sum(body.mass for body in self.bodies)
+
+        for i, body in enumerate(self.bodies):
+            r_cm = body.mass * r[:, i]
+            v_cm = body.mass * v[:, i]
+
+        r_cm = r_cm / m_total
+        v_cm = v_cm / m_total
+
+        result = np.zeros((len(solution), 3))
+
+        for i, body in enumerate(self.bodies):
+            r_rel = r[:, i] - r_cm
+            v_rel = v[:, i] - v_cm
+
+            result += body.mass * np.cross(r_rel, v_rel)
+
+        return result
+
 # The units used are:
 # a.u. for distance
 # earth years for time
@@ -148,11 +174,11 @@ def main():
 
     energy = simulation.get_energy(solution, G)
     relative_energy_error = (energy - energy[0]) / energy[0]
-
     momentum = simulation.get_momentum(solution)
+    angular_momentum = simulation.get_angular_momentum(solution)
 
 
-    draw_window(simulation, solution, t, relative_energy_error, momentum, 0)
+    draw_window(simulation, solution, t, relative_energy_error, momentum, 0, angular_momentum)
 
 
 if __name__ == "__main__":

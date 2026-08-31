@@ -35,8 +35,7 @@ def draw_energy_plot(ax, t, relative_energy_error, frame):
     ax.axvline(t[frame], linestyle='dashed',
               label=f'{relative_energy_error[frame]}')
 
-    ax.set_title("Rel. energy error vs time")
-    ax.set_ylabel("error")
+    ax.set_ylabel("Rel. energy err.")
     ax.legend()
 
 
@@ -54,7 +53,15 @@ def draw_momentum_plot(ax, t, momentum, x, frame):
     else:
         x = 'z'
 
-    ax.set_title(f'{x} momentum vs time')
+    ax.set_ylabel(f'{x} momentum vs time')
+    ax.legend()
+
+def draw_ang_momentum_plot(ax, t, ang_momentum, frame):
+    ax.clear()
+
+    ax.plot(t, ang_momentum[:, 2])
+    ax.axvline(t[frame], linestyle='dashed', label=f'{ang_momentum[frame, 2]}')
+
     ax.set_xlabel("t / years")
-    ax.set_ylabel("momentum / m_e * a.u./year")
+    ax.set_ylabel("ang. momentum vs time")
     ax.legend()
