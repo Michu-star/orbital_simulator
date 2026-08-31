@@ -45,6 +45,66 @@ class Simulation:
 
         return sol
 
+    def get_energy(self, solution, G):
+        result = np.zeros(len(solution))
+        r = solution[:, :, :3]
+
+        for i, body in enumerate(self.bodies):
+            v = solution[:, i, 3:]
+
+            kin = 0.5 * body.mass * np.linalg.norm(v, axis=1) ** 2
+            pot = np.zeros(len(solution))
+            for j, body_due in enumerate(self.bodies):
+                if i >= j:
+                    continue
+                else:
+                    dr = r[:, i] - r[:, j]
+
+                    pot += (
+                            -G * body.mass * body_due.mass
+                            / np.linalg.norm(dr, axis=1)
+                    )
+
+            result += kin + pot
+
+        return result
+
+    def get_momentum(self, solution):
+        result = np.zeros((len(solution), 3))
+
+        for i, body in enumerate(self.bodies):
+            v = solution[:, i, 3:]
+
+            result += body.mass * v
+
+        return result
+
+    def get_angular_momentum(self, solution):
+        r = solution[:, :, :3]
+        v = solution[:, :, 3:]
+
+        r_cm = np.zeros((len(solution), 3))
+        v_cm = np.zeros((len(solution), 3))
+
+        m_total = sum(body.mass for body in self.bodies)
+
+        for i, body in enumerate(self.bodies):
+            r_cm += body.mass * r[:, i]
+            v_cm += body.mass * v[:, i]
+
+        r_cm = r_cm / m_total
+        v_cm = v_cm / m_total
+
+        result = np.zeros((len(solution), 3))
+
+        for i, body in enumerate(self.bodies):
+            r_rel = r[:, i] - r_cm
+            v_rel = v[:, i] - v_cm
+
+            result += body.mass * np.cross(r_rel, v_rel)
+
+        return result
+
 # The units used are:
 # a.u. for distance
 # earth years for time
@@ -106,31 +166,23 @@ def main():
     G = 6.674 * 10 ** -11 * 5.97e24 * 1.496e11**-3 * (3600*24*365.25)**2
     print(G)
 
-    t = np.linspace(0, 10, 20000)
+    t = np.linspace(0, 50, 20000)
 
     simulation = Simulation(bodies_list)
 
     solution = simulation.evolve(t, G)
 
-    draw_window(simulation, solution)
+    energy = simulation.get_energy(solution, G)
+    relative_energy_error = (energy - energy[0]) / energy[0]
 
-'''
-# Plot the trajectory of the Sun
-ax.plot(solution[:, 0, 0], solution[:, 0, 1], color='r')
-ax.plot(solution[0, 0, 0], solution[0, 0, 1], marker='o', label='Sun startpoint', color='#730202')
-ax.plot(solution[-1, 0, 0], solution[-1, 0, 1], marker='o', label='Sun endpoint', color='#ed0202')
+    momentum = simulation.get_momentum(solution)
 
-# Plot the trajectory of the Earth
-ax.plot(solution[:, 1, 0], solution[:, 1, 1], color='b')
+    angular_momentum = simulation.get_angular_momentum(solution)
+    relative_ang_momentum_err = (angular_momentum - angular_momentum[0, 2]) / angular_momentum[0, 2]
 
-# Plot the trajectory of the Moon
-ax.plot(solution[:, 2, 0], solution[:, 2, 1], color='g')
 
-# Plot the trajectory of Mars
-ax.plot(solution[:, 3, 0], solution[:, 3, 1], color='r')
+    draw_window(simulation, solution, t, relative_energy_error, momentum, 0, relative_ang_momentum_err)
 
-plt.show()
-'''
 
 if __name__ == "__main__":
     main()
