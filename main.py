@@ -166,7 +166,7 @@ def main():
     G = 6.674 * 10 ** -11 * 5.97e24 * 1.496e11**-3 * (3600*24*365.25)**2
     print(G)
 
-    t = np.linspace(0, 1, 2000)
+    t = np.linspace(0, 50, 20000)
 
     simulation = Simulation(bodies_list)
 
@@ -174,11 +174,14 @@ def main():
 
     energy = simulation.get_energy(solution, G)
     relative_energy_error = (energy - energy[0]) / energy[0]
+
     momentum = simulation.get_momentum(solution)
+
     angular_momentum = simulation.get_angular_momentum(solution)
+    relative_ang_momentum_err = (angular_momentum - angular_momentum[0, 2]) / angular_momentum[0, 2]
 
 
-    draw_window(simulation, solution, t, relative_energy_error, momentum, 0, angular_momentum)
+    draw_window(simulation, solution, t, relative_energy_error, momentum, 0, relative_ang_momentum_err)
 
 
 if __name__ == "__main__":

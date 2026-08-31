@@ -63,5 +63,5 @@ def draw_ang_momentum_plot(ax, t, ang_momentum, frame):
     ax.axvline(t[frame], linestyle='dashed', label=f'{ang_momentum[frame, 2]}')
 
     ax.set_xlabel("t / years")
-    ax.set_ylabel("ang. momentum vs time")
+    ax.set_ylabel("ang. momentum err. vs time")
     ax.legend()
