@@ -1,0 +1,4 @@
+numpy
+matplotlib
+PyQt6
+physicslib @ git+https://github.com/Michu-star/physicslib.git
