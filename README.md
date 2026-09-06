@@ -2,6 +2,11 @@
 
 A working N-body simulator using the Runge-Kutta method.
 
+The units used are:
+a.u. for distance,
+earth years for time,
+earth masses for mass.
+
 ## Installation
 
 Go to the folder where you want to install the project.
