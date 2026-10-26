@@ -1,5 +1,7 @@
 # 3D $N$-Body Orbital Simulator
 
+![Preview](preview.png)
+
 An interactive 3D gravitational $N$-body simulator for the Solar System (Sun, 8 planets, and the Moon) built with Python, `NumPy`, `Matplotlib`, and `PyQt6`, using custom 4th-order Runge–Kutta (`rk4`) integration from [`physicslib`](https://github.com/Michu-star/physicslib).
 
 ## Physics & Numerical Model
